@@ -4,7 +4,8 @@ Vue.createApp({
       playerHealth: 100,
       monsterHealth: 100,
       round: 0,
-      winner: ''
+      winner: '',
+      logs: []
     }
   },
   watch: {
@@ -40,32 +41,40 @@ Vue.createApp({
       this.monsterHealth -= value;
       this.round++;
       this.attackPlayer();
+      this.showLog('Moster', 'attacks', value);
     },
     attackPlayer() {
       const value = Math.floor(Math.random() * (15 - 8)) + 8;
       this.playerHealth -= value;
+      this.showLog('Player', 'attacks', value);
     },
     specialAttack() {
       const value = Math.floor(Math.random() * (30 - 10)) + 10;
       this.monsterHealth -= value;
       this.round++;
       this.attackPlayer();
+      this.showLog('Player', 'attacks', value);
     },
     healPlayer() {
       const value = Math.floor(Math.random() * (25 - 8)) + 8;
       this.playerHealth = this.playerHealth + value > 100 ? 100 : this.playerHealth + value;
       this.round++;
       this.attackPlayer();
+      this.showLog('Player', 'heals himself for', value);
     },
     startNewGame() {
       this.playerHealth = 100;
       this.monsterHealth = 100;
       this.round = 0;
       this.winner = '';
+      this.logs = [];
     },
     surrender() {
       this.winner = 'monster';
       this.playerHealth = 0;
+    },
+    showLog(who, action, value) {
+      this.logs.unshift({who, action, value});
     }
   }
 }).mount("#game");
